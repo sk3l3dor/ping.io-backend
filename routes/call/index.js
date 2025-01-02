@@ -6,13 +6,16 @@ const callController = require("../../controllers/call");
 
 
 
-router.post('/', callController.initiateCall);
+router.post('/',isAuth, callController.initiateCall);
 
 // Get call history for the authenticated user
-router.get('/:userId', callController.getCallHistory);
+router.get('/:userId',isAuth, callController.getCallHistory);
 
 // End an ongoing call session
-router.delete('/:callId', callController.endCall);
+router.delete('/:callId', isAuth, callController.endCall);
 
 // Get details of a specific call
-router.get('/:callId', callController.getCallDetails);
+router.get('/:callId', isAuth, callController.getCallDetails);
+
+
+module.exports = router;

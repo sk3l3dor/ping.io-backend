@@ -4,7 +4,8 @@
   "description": "A Web based chat application,rich in features",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon index.js"
   },
   "author": "Rohit N",
   "license": "ISC",
@@ -30,5 +31,8 @@
     "sharp": "^0.33.5",
     "socket.io": "^4.8.1",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

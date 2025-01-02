@@ -82,8 +82,8 @@ io.on('connection', (socket) => {
 // Database connection and server start
 const startServer = async () => {
     try {
-        const DB_URL = process.env.TNO_V1_DB_URL;
-        const PORT = process.env.TNO_V1_PORT;
+        const DB_URL = process.env.PNG_V1_DB_URL;
+        const PORT = process.env.PNG_V1_PORT;
 
         await mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
         console.log("DB Connection Successful");

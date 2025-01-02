@@ -32,3 +32,6 @@ router.post(
     ],
     userController.validateOtpToLogin
   );
+
+
+  module.exports = router;

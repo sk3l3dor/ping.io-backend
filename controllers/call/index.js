@@ -99,3 +99,8 @@ module.exports.endCall = async(req,res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+
+module.exports.getCallDetails = async (req,res) => {
+    
+};

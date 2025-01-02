@@ -7,6 +7,7 @@ const messageController = require("../../controllers/message");
 
 router.post(
     "/new",
+    isAuth,
     [
       body("chatId").not().isEmpty(),
       body("senderId").not().isEmpty(),
@@ -26,3 +27,6 @@ router.delete('/:messageId',isAuth, messageController.deleteMessage);
 
 // Mark messages as read for a specific user
 router.put('/mark-read/:userId',isAuth, messageController.markMessagesAsRead);
+
+
+module.exports = router;

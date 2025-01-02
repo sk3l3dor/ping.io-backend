@@ -7,6 +7,7 @@ const chatController = require("../../controllers/chat");
 
 router.post(
     "/",
+    isAuth,
     [
       body("participants").not().isEmpty(),
       body("name").not().isEmpty(),
@@ -17,7 +18,7 @@ router.post(
 
 
   router.get(
-    "/user/:id",chatController.getAllChatsForUser
+    "/user/:id", isAuth,chatController.getAllChatsForUser
   );
 
   router.get('/:chatId',isAuth, chatController.getChatById);
@@ -36,5 +37,7 @@ router.post(
             
             
   router.delete('/:chatId', isAuth, chatController.deleteChat);
+
+  module.exports = router;
 
 
