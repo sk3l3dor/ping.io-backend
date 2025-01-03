@@ -1,37 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-const isAuth = require("../../authentication/is-auth");
-const userController = require("../../controllers/user");
+const passport = require('passport');
+const authController = require("../../controllers/auth"); // Adjust the path as necessary
+const userController = require("../../controllers/user")
 
-
+// Route for user signup
 router.post(
-    "/register-token",
+    "/sign-up",
     [
-      body("name").not().isEmpty(),
-      body("password").not().isEmpty(),
-      body("phone_number").not().isEmpty(),
-      body("role").not().isEmpty(),
+        body("name").trim().not().isEmpty(),
+        body("email").trim().isEmail(),
+        body("phone_number").trim().not().isEmpty(),
+        body("password").not().isEmpty(),
     ],
-    userController.registerUserWithoutToken 
-  );
+    userController.signup 
+);
 
-  router.post(
+// Route for logging in via OTP
+router.post(
     "/login-via-otp",
     [
-        body("phone_number").not().isEmpty(),
+        body("phone_number").trim().not().isEmpty().withMessage("Phone number is required"),
     ],
-    userController.loginUsingOtp
-  );
+    userController.loginUsingOtp // Implement this in your controller
+);
 
-  router.post(
+// Route for validating OTP for login
+router.post(
     "/validate-otp-for-login",
     [
-      body("user_id").trim().not().isEmpty(),
-      body("otp").trim().not().isEmpty().isInt().isLength({ min: 6, max: 6 }),
+        body("user_id").trim().not().isEmpty().withMessage("User  ID is required"),
+        body("otp").trim().isInt().isLength({ min: 6, max: 6 }).withMessage("OTP must be a 6-digit number"),
     ],
-    userController.validateOtpToLogin
-  );
+    userController.validateOtpToLogin // Implement this in your controller
+);
 
-
-  module.exports = router;
+module.exports = router;

@@ -21,6 +21,32 @@ const JWT_SECRET = process.env.PNG_V1_JWT_SECRET;
 const TOKEN_VALIDITY = process.env.PNG_V1_TOKEN_VALIDITY;
 const TOKEN_MAX_VALIDITY = process.env.PNG_V1_TOKEN_MAX_VALIDITY;
 
+
+module.exports.signup = async (req,res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.status(400).json({ message: 'Bad request', errors: errors.array() });
+  }
+
+  const { name, email, phone_number, password } = req.body;
+
+  try {
+      const existingUser  = await User.findOne({ email });
+      if (existingUser ) {
+          return res.status(409).json({ message: 'User  already exists' });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser  = new User({ name, email, phone_number, password: hashedPassword });
+      await newUser .save();
+
+      const token = jwt.sign({ id: newUser ._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      return res.status(201).json({ message: 'User  created successfully', token });
+  } catch (error) {
+      return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports.registerUserWithoutToken = async (req, res) => {
     const errors = validationResult(req);
   
@@ -226,3 +252,53 @@ module.exports.validateOtpToLogin = async (req,res) => {
     }
   
   };
+
+
+  module.exports.signupNewUser  = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(STATUS.BAD_REQUEST).json({
+            message: `Bad request`,
+            errors: errors.array(),
+        });
+    }
+
+    const { name, email, phone_number, password } = req.body;
+
+    try {
+        // Check if user already exists
+        const existingUser  = await User.findOne({ email });
+        if (existingUser ) {
+            return res.status(STATUS.CONFLICT).json({
+                message: 'User  already exists',
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new user
+        const newUser  = new User({
+            name,
+            email,
+            phone_number,
+            password: hashedPassword,
+        });
+
+        await newUser .save();
+
+        // Generate a token (optional)
+        const token = jwt.sign({ id: newUser ._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        return res.status(STATUS.CREATED).json({
+            message: 'User  created successfully',
+            token,
+        });
+    } catch (error) {
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+            message: 'Server error',
+            error: error.message,
+        });
+    }
+};
